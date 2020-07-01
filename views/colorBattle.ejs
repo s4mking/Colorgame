@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/style.css">
+
+    <title>Color Battle</title>
+    <script>
+
+    </script>
+</head>
+
+<body>
+
+    <%- include('parts/header') %>
+    <input id="myColor" type="color" name="myColor">
+    <table id="colortable">
+        <% for(var i=0; i < 25; i++) { %>
+        <tr>
+            <% for(var j=0; j < 25; j++) { %>
+            <td class="elmt" id="<%= j+(i*25) %>" style="background-color:<%= arraydata["id"+(j+(i*25))] %>" </td>
+                <% } %> </tr> <% } %> </table> <script src="/socket.io/socket.io.js">
+                </script>
+                <script>
+                    var socket = io();
+
+                    var select = document.querySelectorAll(".elmt");
+                    var idGame = '<%=id%>'
+                    select.forEach(td => {
+                        td.addEventListener("click", function () {
+                            var color = document.getElementById("myColor").value;
+                            socket.emit('color', [this.id, color, idGame]);
+                        });
+                    });
+
+                    socket.on('changecolor', data => {
+                        console.log(data.colorbattle[0]);
+                        document.getElementById(data.colorbattle[0]).style.backgroundColor = data.colorbattle[1]
+                    });
+                </script>
+</body>
+
+</html>

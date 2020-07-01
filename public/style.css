@@ -1,0 +1,18 @@
+body {
+    background-color: black;
+    color: white;
+}
+
+a {
+    color: white;
+}
+
+tr,
+td {
+    border: 1px solid white;
+}
+
+td {
+    width: 30px;
+    height: 30px;
+}

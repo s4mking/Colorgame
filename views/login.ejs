@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
+
+    <title>Document</title>
+</head>
+
+<body>
+
+    <% if (user) { %>
+
+    <%= user.firstname %> <%= user.lastname %>
+
+    <% } %>
+
+    <form name="myForm">
+
+        <input type="text" name="email_">
+        <input type="password" name="password">
+        <input type="submit">
+
+    </form>
+
+    <script>
+        document.forms[0].addEventListener("submit", function (event) {
+
+            event.preventDefault()
+
+            let [email, password] = this
+
+            fetch("/api/users/login", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email.value,
+                    password: password.value
+                })
+            }).then((res) => {
+                res.json().then((json) => {
+                    console.log(json)
+                })
+
+            })
+
+            // this.seri
+
+        })
+    </script>
+
+</body>
+
+</html>
