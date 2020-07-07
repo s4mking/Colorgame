@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/style.css">
+
+
+    <title>Tableau films</title>
+</head>
+
+<body>
+
+    <%- include('parts/header') %>
+    <table>
+        <tr>
+            <th><a href="/films/?sort=id">ID</a></th>
+            <th><a href="/films/?sort=titre">Titre</a></th>
+            <th><a href="/films/?sort=resum">Resum</a></th>
+            <th><a href="/films/?sort=date_debut_affiche">Date debut affiche</a></th>
+            <th><a href="/films/?sort=date_fin_affiche">Date fin affiche</a></th>
+            <th><a href="/films/?sort=duree_minutes">Durée minutes</a></th>
+            <th><a href="/films/?sort=annee_production">Année production</a></th>
+        </tr>
+        <% results.forEach(function(film)  { %>
+        <tr>
+            <td><%= film.titre %></td>
+            <td><%= film.resum %></td>
+            <td><%= film.duree_minutes %></td>
+            <td><%= film.date_debut_affiche %></td>
+            <td><%= film.date_fin_affiche %></td>
+            <td><%= film.annee_production %></td>
+        </tr>
+        <% }); %>
+    </table>
+
+    <% for(var i=1; i <= Math.ceil(count/limit); i++) { %>
+    <a href="/?films=<%= i %>&limit=<%= limit %>&sort=<%= sort %>"><%= i %></a>
+    <% } %>
+</body>
+<script>
+    console.log("<%=results %>")
+    fetch("/films/", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email.value,
+            password: password.value
+        })
+    }).then((res) => {
+        res.json().then((json) => {
+            console.log(json)
+        })
+
+    })
+</script>
+
+</html>
