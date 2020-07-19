@@ -2,7 +2,22 @@ const express = require('express'),
       router = express.Router(),
       sql = require('../database');
 
-router.all('/films/:id(\\d+)', (request, response, next) => {
+// router.all('api/films/:id(\\d+)', (request, response, next) => {
+    
+//     sql.query(`SELECT * FROM films WHERE id_film = ${request.params.id}`, (err, result) => {
+
+//         if (result[0]) {
+//             request.film = result[0]
+//             next()
+//         } else {
+//             response.redirect('/404')
+//         }
+
+//     })
+
+// })
+
+router.get('api/films/:id(\\d+)', (request, response) => {
     
     sql.query(`SELECT * FROM films WHERE id_film = ${request.params.id}`, (err, result) => {
 
@@ -17,14 +32,6 @@ router.all('/films/:id(\\d+)', (request, response, next) => {
 
 })
 
-router.get('/films/:id(\\d+)', (request, response) => {
-    
-    response.render('film', {
-        film: request.film,
-    });
-
-})
-
 router.put('/films/:id(\\d+)', (request, response) => {
 
     sql.query(`UPDATE titre = ${request.body.title} FROM films WHERE id_film = ${request.film.id_film} `, (err, result) => {
@@ -35,7 +42,7 @@ router.put('/films/:id(\\d+)', (request, response) => {
 
 })
 
-router.delete('/films/:id(\\d+)', (request, response) => {
+router.delete('api/films/:id(\\d+)', (request, response) => {
 
     sql.query(`DELETE FROM films WHERE id_film = ${request.film.id_film}`, (err, result) => {
 

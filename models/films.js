@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('films', {
+  const Films =  sequelize.define('films', {
     id_film: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -43,4 +43,9 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     tableName: 'films'
   });
+  // Films.associate = function(models) {
+  //   Films.belongsTo(models.Genres, {foreignKey: 'id_genre', as: 'genre'})
+  //   Films.belongsTo(models.Distributeurs, {foreignKey: 'id_distributeur', as: 'distributeur'})
+  // };
+  return Films;
 };

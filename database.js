@@ -1,6 +1,8 @@
 const userModel = require('./models/User')
 const colorbattleModel = require('./models/Colorbattle')
 const filmModel = require('./models/films')
+const genreModel = require('./models/genres')
+const distributeurModel = require('./models/distributeurs')
 
 const { Sequelize, DataTypes } = require('sequelize');
 
@@ -13,15 +15,26 @@ const sequelize = new Sequelize('cinema', 'root', 'root', {
 const User = userModel(sequelize, DataTypes)
 const Colorbattle = colorbattleModel(sequelize, DataTypes)
 const Films = filmModel(sequelize, DataTypes)
-// sequelize.sync({
-//     alter:{
-//         drop:false
-//     }
-// })
+const Genres = genreModel(sequelize, DataTypes)
+const Distributeurs = distributeurModel(sequelize, DataTypes)
+
+Genres.hasMany(Films)
+Films.belongsTo(Genres,{foreignKey: 'id_genre'})
+
+Distributeurs.hasMany(Films)
+Films.belongsTo(Distributeurs,{foreignKey: 'id_distributeur'})
+
+sequelize.sync({
+    alter:{
+        drop:false
+    }
+})
 
 module.exports = {
     sequelize: sequelize,
     User: User,
     Colorbattle: Colorbattle,
-    Films : Films
+    Films : Films,
+    Genres : Genres,
+    Distributeurs : Distributeurs
 }

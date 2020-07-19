@@ -1,68 +1,79 @@
 const express = require('express'),
       router = express.Router(),
-      { sequelize, User } = require('../../database'),
       bodyParser = require('body-parser'),
-      sha1 = require('sha1')
-    
- 
-router.post('/api/users/login', (request, response) => {
+      sha1 = require('sha1'),
+      fs = require('fs').promises,
+      validatorUserCreate = require('./../../validators/users_create'),
+      { Op } = require('sequelize'),
+      moment = require('moment'),
+      jwt = require('jsonwebtoken')
 
-    User.findOne({where: {
-        email: request.body.email,
+let { 
+    User,
+    Post,
+    PostCategory
+} = require('../../database')
+
+router.post('/api/users/login', async (request, response) => {
+    // console.log(request)
+    let user = await User.findOne({where: {
+        email: request.body.username,
         password: sha1(request.body.password)
-    }}).then((user) => {
+    }})
 
-        if (user) {
-
-            // request.session.user = user
-
-            request.session.user_id = user.id
-            response.json({status: 200})
-        } else {
-            response.json({status: 400})
-        }
-
-    })
+    if (user) {
+        response.json({status: 200, token: jwt.sign({ id: user.id }, 'testsamuel') })
+    } else {
+        response.json({status: 400})
+    }
 
 })
 
-router.post('/api/users/register', (request, response) => {
+router.get('/api/users', async (request, response) => {
 
-    User.findOne({where: {
-        email: request.body.email,
-        password: sha1(request.body.password)
-    }}).then((user) => {
+    if (request.user.isSupport()) {
 
-        if (user) {
+        let date = moment()
+        date.subtract(1, 'week')
 
-            // request.session.user = user
-            request.session.user_id = user.id
-            response.json({status: 200})
-        } else {
-            response.json({status: 400})
-        }
+        console.log('HELLO')
 
-    })
+        let users = await User.findAll({
+            where: {
+                createdAt: {
+                    [Op.between]: [date.toDate(), new Date()]
+                }
+            },
+            include: [
+                { 
+                    model: Post,
+                    include: [
+                        { model: PostCategory }
+                    ]
+                }
+            ]
+        })
 
-})
-
-router.get('/api/users', (request, response) => {
-
-    User.findAll().then((users) => {
         response.json(users)
-    })
+
+    } else {
+        response.status(401).json({status: 401, msg: "Non pas admin"})
+    }
+
+    
 
 })
 
-router.post('/api/users', (request, response) => {
+router.post('/api/users', validatorUserCreate , (request, response) => {
 
     User.create({
         firstname: request.body.firstname,
         lastname: request.body.lastname,
         email: request.body.email,
-        birth_date: new Date()
+        birth_date: new Date(),
+        password: sha1(request.body.password)
     }).then((user) => {
-        response.json(user)
+        response.json({status: 201, data: user})
     })
 
 })
@@ -104,5 +115,4 @@ router.delete('/api/users/:id(\\d+)', (request, response) => {
     })
 
 })
-
 module.exports = router

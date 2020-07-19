@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('genres', {
+  const Genres =  sequelize.define('genres', {
     id_genre: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -15,4 +15,8 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     tableName: 'genres'
   });
+  Genres.associate = function(models) {
+    Genres.hasMany(models.Films, {as: 'films'})
+  };
+  return Genres;
 };

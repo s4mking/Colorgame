@@ -1,7 +1,9 @@
 /* jshint indent: 2 */
 
+const { Distributeurs } = require("../database");
+
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('distributeurs', {
+  const Distributeurs = sequelize.define('distributeurs', {
     id_distributeur: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -35,4 +37,8 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     tableName: 'distributeurs'
   });
+  Distributeurs.associate = function(models) {
+    Distributeurs.hasMany(models.Films, {as: 'films'})
+  };
+  return Distributeurs;
 };
